@@ -3,4 +3,4 @@ from app import app
 
 @app.route("/")
 def initRoute():
-    return  "HELLO WORLD"
+	return  "HELLO WORLD"
