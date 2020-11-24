@@ -1,1 +1,6 @@
 # ALL STUDENT RELATED ROUTES GO HERE
+from app import app
+
+@app.route("/")
+def index():
+	return "HELLO WORLD"
