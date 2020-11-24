@@ -1,5 +1,5 @@
 # Library Management application:
-This repository contains the code for the DBMS mini-projects of Dharithri M ( 4NI18CS121 ) & Pranav B ( 4NI18CS122 ).
+This repository contains the code for the DBMS mini-projects of Dharithri M (4NI18CS121) & Pranav B (4NI18CS122).
 
 ## What is it ?:
 Library management deals in management of records. The records include books which are required by different students accordingly. Maintaining these records manually becomes difficult thus we are proving such system a computerized backend. And as the number of books increases the issue of tracking and ordering becomes exponentially harder. 
