@@ -1,0 +1,54 @@
+{% extends "baseHtml.html" %}
+
+{% block navbarItems %}
+	<ul class="navbar__links">
+		{% if not session['token'] %}
+			<a href="{{url_for('loginHandler')}}">
+				<li>Login</li>
+			</a>
+		{% else %}
+			<a href="{{url_for('logoutHandler')}}">
+				<li>Logout</li>
+			</a>
+		{% endif %}
+		{% if session['token'] %}
+			<a href="{{url_for('profileHandler')}}">
+				<li>Profile</li>
+			</a>
+		{% endif %}
+	</ul>
+{% endblock %}
+
+{% block imports %}
+	<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/bookCard.css') }}">
+{% endblock %}
+
+
+{% block bodyContent %}
+	<div class="columns is-multiline is-mobile is-inline-flex" style="background-color: black;">
+		{% for book in bookList %}
+			<div class="column is-one-third">
+				<a href="{{url_for('bookHandler',id=book._id)}}">
+					<div class="bookCard">
+						<div class="cardTop" style="background:url({{book.ImageUrl}}) no-repeat;">
+						</div>
+						<div class="cardBottom">
+						<div class="cardText">
+							<!--       Title and description will always show -->
+							<h3 class="cardTitle">{{book.Name}}</h3>
+							<h4 class="cardInfo">{{book.Author}}</h4>
+							<!--       Only visibile when parent element is hovered over -->
+							<div class="cardHoverText">
+								{{book.Description}}
+							</div>
+							<!--       Only visibile when parent element is hovered over -->
+						</div>
+						</div>
+					</div>
+				</a>
+			</div>
+		{% endfor %}
+	</div>
+
+{% endblock %}
+

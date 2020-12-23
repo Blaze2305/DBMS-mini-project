@@ -1,0 +1,40 @@
+{% extends "baseHtml.html" %}
+
+{% block navbarItems %}
+	<ul class="navbar__links">
+		{% if not session['token'] %}
+			<a href="{{url_for('loginHandler')}}">
+				<li>Login</li>
+			</a>
+		{% else %}
+			<a href="{{url_for('logoutHandler')}}">
+				<li>Logout</li>
+			</a>
+			<a href="{{url_for('profileHandler')}}">
+				<li>Profile</li>
+			</a>
+		{% endif %}
+	</ul>
+{% endblock %}
+
+{% block bodyContent %}
+
+	<img src="{{url_for('static',filename='images/index.jpg')}}" 
+		 alt="library">
+	<h1 style="text-align: center;padding-top:2rem;">
+		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+		<br>Urna nunc id cursus metus aliquam eleifend. Orci a scelerisque purus semper eget duis at.
+		<br> Fringilla est ullamcorper
+		eget nulla facilisi etiam dignissim. Nisi lacus sed viverra tellus. Tristique et egestas quis ipsum suspendisse.
+	</h1>
+	<br>  
+	
+	<style>
+		html {
+			background-color: black;
+			color: white;
+		}
+	</style>
+{% endblock %}
+
+
