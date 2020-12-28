@@ -1,0 +1,169 @@
+/* Search bar */
+
+
+@import url(https://fonts.googleapis.com/css?family=Roboto:400,500,700);
+ div {
+  box-sizing: border-box;
+}
+
+html, body {
+  -webkit-font-smoothing: antialiased;
+}
+
+.container {
+  display: block;
+  width: 70%;
+  margin: 20px auto 0 auto;
+  height: auto;
+}
+
+.searchbox{
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+    /* margin: 10px; */
+    padding: .5em;
+    padding-right: 2.5em;
+    border: 0;
+    margin: 0;
+}
+
+.sw {
+  float: left;
+  width: 100%;
+  height: 2.45em;
+  background: #1abc9c;
+  padding: 5px;
+  display: -webkit-box;
+  display: flex;
+  -webkit-box-align: center;
+          align-items: center;
+  box-shadow: 0 2px 0 0px rgba(0, 0, 0, 0.1);
+  border-radius: 3px;
+
+}
+
+.sw .search {
+  -webkit-box-flex: 1;
+          flex: 1 1 auto;
+  -webkit-box-ordinal-group: 3;
+          order: 2;
+  outline: none;
+  border: none;
+  border-radius: 0;
+  background: #fff;
+  padding: 10px;
+  color: black;
+  font-family: 'Roboto', sans-serif;
+  height: 1em;
+  -webkit-transition: all 0.05s ease-in-out;
+  transition: all 0.05s ease-in-out;
+  -webkit-appearance: none;
+}
+.sw .search:focus {
+  height: 2.8em;
+  margin-left: -15px;
+  padding: 10px 15px;
+}
+
+
+
+/* Custom dropdown */
+
+.custom-dropdown {
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+    margin: 10px;
+    /* demo only */
+}
+
+.custom-dropdown select {
+    background-color: #1abc9c;
+    color: #fff;
+    font-size: inherit;
+    padding: .5em;
+    padding-right: 2.5em;
+    border: 0;
+    margin: 0;
+    border-radius: 3px;
+    text-indent: 0.01px;
+    text-overflow: '';
+    -webkit-appearance: none;
+    /* hide default arrow in chrome OSX */
+}
+
+.custom-dropdown::before,
+.custom-dropdown::after {
+    content: "";
+    position: absolute;
+    pointer-events: none;
+}
+
+.custom-dropdown::after {
+    /*  Custom dropdown arrow */
+    content: "\25BC";
+    height: 1em;
+    font-size: .625em;
+    line-height: 1;
+    right: 1.2em;
+    top: 50%;
+    margin-top: -.5em;
+}
+
+.custom-dropdown::before {
+    /*  Custom dropdown arrow cover */
+    width: 2em;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    border-radius: 0 3px 3px 0;
+}
+
+.custom-dropdown select[disabled] {
+    color: rgba(0, 0, 0, .3);
+}
+
+.custom-dropdown select[disabled]::after {
+    color: rgba(0, 0, 0, .1);
+}
+
+.custom-dropdown::before {
+    background-color: rgba(0, 0, 0, .15);
+}
+
+.custom-dropdown::after {
+    color: rgba(0, 0, 0, .4);
+}
+
+/* Search button */
+
+.custom_button {
+    position: relative;
+    display: inline-block;
+    vertical-align:bottom;
+    margin: 30px;
+    /* demo only */
+}
+
+.custom_button button {
+    background-color: #1abc9c;
+    color: #fff;
+    font-size: inherit;
+    padding: .5em;
+    padding-right: 2.5em;
+    border: 0;
+    margin: 0;
+    border-radius: 3px;
+    text-indent: 0.01px;
+    text-overflow: '';
+    -webkit-appearance: none;
+    /* hide default arrow in chrome OSX */
+}
+.custom_button button[disabled] {
+    color: rgba(0, 0, 0, .3);
+}
+
+.custom_buttonn button[disabled]::after {
+    color: rgba(0, 0, 0, .1);
+}

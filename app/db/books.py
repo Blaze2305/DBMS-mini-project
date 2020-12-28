@@ -2,6 +2,7 @@
 from app.constants import booksCollection,borrowsCollection,tokenCollection # import required collections
 from pymongo.errors import ConnectionFailure,DuplicateKeyError # Pymongo errors
 from datetime import datetime,timedelta
+from re import compile,IGNORECASE
 
 # Get a specific book
 def getBook(id):
@@ -22,21 +23,32 @@ def getBook(id):
 	return {'status':True,'message':bookData}
 
 # Get all available books
-# TO DO : sorting 
-def getAllBooks():
+def getAllBooks(bookFilter = {}):
 	'''
 		Function to get a list of all the available books in the database
 		params:
-			None
+			bookFilter : <dict> Items to filter the search by
 		returns:
 			<dict> {status:True,message:<List(dict): List of all the books>} if success
 					{status:False,message:Error Message} if failure
 	'''
+	finalFilter = {}
+	print(bookFilter)
+	if bookFilter:
+		if bookFilter['titleSearchBox']:
+			finalFilter['Name'] = {"$regex":compile(".*"+bookFilter['titleSearchBox']+".*",IGNORECASE)}
+		if bookFilter['deptSelect']!="---":
+			finalFilter['Department'] = bookFilter['deptSelect']
+		if bookFilter['yearSelect']!='---':
+			finalFilter['Year'] = int(bookFilter['yearSelect'].split(" ")[1])
+		print(finalFilter)
+	# bookFilter={}
+
 	try:
-		bookDataList = list(booksCollection.find({},{"Author":1,"ImageUrl":1,"Description":1,"Name":1}))
+		bookDataList = list(booksCollection.find(finalFilter,{"Author":1,"ImageUrl":1,"Description":1,"Name":1}))
 	except ConnectionFailure:
 		return {'status':False,'message':"Unable to Connect to database"}
-
+	print(len(bookDataList))
 	return {'status':True,'message':bookDataList}
 
 # Reserve a book
@@ -55,9 +67,9 @@ def reserveBook(book_id,book_name,token):
 	# generate the book borrow object
 	borrowObj = {
 		"Name":book_name,
-		"Borrowed On":datetime.now(),
-		"Due Date":(datetime.now() + timedelta(days=10)),
-		"Returned On":None,
+		"BorrowedOn":datetime.now(),
+		"DueDate":(datetime.now() + timedelta(days=10)),
+		"ReturnedOn":None,
 		"User":tokenObj['_id'],
 		"BookID":book_id
 	}

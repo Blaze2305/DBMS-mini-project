@@ -21,34 +21,163 @@
 
 {% block imports %}
 	<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/bookCard.css') }}">
+	<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/dropdown.css') }}">
 {% endblock %}
 
 
 {% block bodyContent %}
-	<div class="columns is-multiline is-mobile is-inline-flex" style="background-color: black;">
-		{% for book in bookList %}
-			<div class="column is-one-third">
-				<a href="{{url_for('bookHandler',id=book._id)}}">
-					<div class="bookCard">
-						<div class="cardTop" style="background:url({{book.ImageUrl}}) no-repeat;">
-						</div>
-						<div class="cardBottom">
-						<div class="cardText">
-							<!--       Title and description will always show -->
-							<h3 class="cardTitle">{{book.Name}}</h3>
-							<h4 class="cardInfo">{{book.Author}}</h4>
-							<!--       Only visibile when parent element is hovered over -->
-							<div class="cardHoverText">
-								{{book.Description}}
-							</div>
-							<!--       Only visibile when parent element is hovered over -->
-						</div>
+<br><br><br><br>
+	<div class="container">
+		<form action="/search" method="POST">
+
+			<div class="columns  is-centered is-mobile is-8">
+				<div class="column">
+					Search By Title
+					<div class="searchbox">
+						<div class="sw">
+							<input  type="search" id='searchbox' name='titleSearchBox' class="search" placeholder="Search..." style="font-size: medium;"/>
 						</div>
 					</div>
-				</a>
-			</div>
-		{% endfor %}
+				</div>
+				<div class="column">
+					&nbsp;&nbsp;&nbsp;Search by Dept <br>
+					<span class="custom-dropdown">
+						<select id='deptSelect' name='deptSelect' style="color: black;">
+							<option>---</option>
+							<option>CSE</option>
+							<option>ISE</option>
+							<option>Mechanical</option>
+							<option>IPE</option>
+							<option>Civil</option>
+							<option>EEE</option>
+							<option>ECE</option>
+						</select>
+					</span>
+	
+				</div>
+				<div class="column">
+					&nbsp;&nbsp;&nbsp;Search by Year
+					<span class="custom-dropdown">
+						<select id='yearSelect' name='yearSelect' style="width: 200px;color: black;">
+							<option>---</option>
+							<option>Year 1</option>  
+							<option>Year 2</option>
+							<option>Year 3</option>
+							<option>Year 4</option>
+						</select>
+					</span>
+				</div>
+				<div class="column">
+					<span class="custom_button">
+						<button type="submit" style="font-size: larger;color: black;font-weight: 400;">Search</button>
+					</span>
+				</div>
+			</div>	
+		</form>
 	</div>
+	{% if bookList %}
+		<div class="columns is-multiline is-mobile is-inline-flex" style="background-color: black;">
+			{% for book in bookList %}
+				<div class="column is-one-third">
+					<a href="{{url_for('bookHandler',id=book._id)}}">
+						<div class="bookCard">
+							<div class="cardTop" style="background:url({{book.ImageUrl}}) no-repeat;">
+							</div>
+							<div class="cardBottom">
+							<div class="cardText">
+								<!--       Title and description will always show -->
+								<h3 class="cardTitle">{{book.Name}}</h3>
+								<h4 class="cardInfo">{{book.Author}}</h4>
+								<!--       Only visibile when parent element is hovered over -->
+								<div class="cardHoverText">
+									{{book.Description}}
+								</div>
+								<!--       Only visibile when parent element is hovered over -->
+							</div>
+							</div>
+						</div>
+					</a>
+				</div>
+			{% endfor %}
+		</div>
+	{% else %}
+		<div>
+			<img src="{{url_for('static',filename='images/empty.svg')}}" style="max-width: 100%;height: auto;" >
+			<div class="message-box">
+				<h1>No books found</h1>
+				<p>The search you made has no matching results. Try another filter</p>
+			</div>
+		</div>
+	{% endif %}
+	
+{% if searchData %}
+	<script>
+		$("#yearSelect").val("{{searchData['yearSelect']}}")
+		$("#deptSelect").val("{{searchData['deptSelect']}}")
+		$("#searchbox").val("{{searchData['titleSearchBox']}}")
+	</script>
+{% endif %}
 
+<style>
+	html{
+		background-color: black;
+	}
+	body{
+		background-color: black;
+	}
+
+	@media (max-width: 450px) {
+  .message-box {
+    top: 50%;
+    left: 50%;
+    margin-top: -100px;
+    margin-left: -190px;
+	text-align: center;
+	background-color: transparent;
+  }
+}
+
+.message-box {
+  height: 200px;
+  width: 380px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -100px;
+  margin-left: 50px;
+  color: #FFF;
+  font-family: Roboto;
+  font-weight: 300;
+  background-color: transparent;
+}
+.message-box h1 {
+  font-size: 50px;
+  line-height: 46px;
+  margin-bottom: 40px;
+  background-color: transparent;
+}
+</style>
+
+<!-- 
+	<script>
+		function get_filtered_catalogue(){
+			var sendInfo = {
+				"year":$("#yearSelect").val(),
+				"dept":$("#deptSelect").val(),
+				"title":$("#searchbox").val()
+			}
+			console.log(sendInfo)
+			$.ajax({
+					type: 'POST',
+					url: '/search',
+					data: JSON.stringify (sendInfo),
+					success:()=>{
+						console.log("Book Reserved")
+					},
+					contentType: "application/json",
+					dataType: 'json'
+				});
+		}
+	</script> -->
 {% endblock %}
 

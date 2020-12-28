@@ -11,6 +11,8 @@ def index():
 	return render_template("home.html",PageTitle="Home")
 
 
+
+
 # Create the route for a single book
 @app.route("/books/<id>",methods = ['GET'])
 def bookHandler(id):
@@ -22,13 +24,23 @@ def bookHandler(id):
 		return render_template("bookPage.html",bookData = bookData,PageTitle = "Book page")
 
 
-@app.route("/books",methods = ['GET'])
+@app.route("/books")
 def bookCatalogueHandler():
-	if request.method == "GET":
-		bookList = books.getAllBooks()
+	bookList = books.getAllBooks()
+	if not bookList['status']:
+		return Response(bookList['status'],400)
+	return render_template("bookCatalouge.html",bookList= bookList['message'])
+
+
+@app.route("/search",methods=['POST'])
+def filteredCatalouge():
+	if request.method == "POST":
+		data = request.form
+		bookList = books.getAllBooks(data)
 		if not bookList['status']:
 			return Response(bookList['status'],400)
-		return render_template("bookCatalouge.html",bookList= bookList['message'])
+		return render_template("bookCatalouge.html",bookList = bookList['message'],searchData=data)
+
 
 @app.route("/reserve",methods=["POST"])
 def reserveHandler():

@@ -12,9 +12,9 @@ def utility_processor():
 		print(book_id,token)
 		tokenObj = tokenCollection.find_one({"token":token})
 		borrowObj = borrowsCollection.find_one({"User":tokenObj['_id'],"BookID":book_id})
-		daysDue = (datetime.now().replace(minute=0,second=0,hour=0,microsecond=0)-borrowObj['Due Date'].replace(minute=0,second=0,hour=0,microsecond=0)).days
+		daysDue = (datetime.now().replace(minute=0,second=0,hour=0,microsecond=0)-borrowObj['DueDate'].replace(minute=0,second=0,hour=0,microsecond=0)).days
 		if daysDue<=0:
-			return "nil"
+			return "--"
 		else:
 			return 5*daysDue
 
@@ -32,7 +32,7 @@ def utility_processor():
 	def getDueDate(token,book_id):
 		tokenObj = tokenCollection.find_one({"token":token})
 		borrowObj = borrowsCollection.find_one({"User":tokenObj['_id'],"BookID":book_id})
-		duedate = borrowObj['Due Date'].strftime("%Y-%m-%d")
+		duedate = borrowObj['DueDate'].strftime("%Y-%m-%d")
 		return duedate
 
 	def bookdue(duedate):
@@ -45,8 +45,3 @@ def utility_processor():
 		return date.strftime("%Y-%m-%d")
 
 	return dict(format_price=format_price,get_curr_due_date=getCurDueDate,check_if_reserved=checkIfReserved,format_date=formatDate,book_due=bookdue,calculate_dues=calculateDues,get_due_date=getDueDate)
-
-
-def checkIfAdmin():
-	# TO DO
-	pass

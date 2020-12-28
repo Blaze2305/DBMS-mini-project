@@ -31,7 +31,7 @@
 			<br>
 			<article class="tile is-child  is-primary">
 				<p class="title">Date of Birth</p>
-				<p class="subtitle">{{userData['Date of Birth']}}</p>
+				<p class="subtitle">{{userData['DOB']}}</p>
 			</article>
 			<br>
 			<article class="tile is-child  is-primary">
@@ -97,17 +97,17 @@
 							<tr>
 								<th style="color: white;">{{loop.index}}</th>
 								<td>{{item['Name']}}</td>
-								<td>{{format_date(item['Borrowed On'])}}</td>
-								<td>{{format_date(item['Due Date'])}}</td>
-								{% if not item['Returned On'] %}
-									<td>nil</td>
+								<td>{{format_date(item['BorrowedOn'])}}</td>
+								<td>{{format_date(item['DueDate'])}}</td>
+								{% if not item['ReturnedOn'] %}
+									<td>--</td>
 								{% else %}
-									<td>{{item['Returned On']}}</td>
+									<td>{{item['ReturnedOn']}}</td>
 								{% endif %}
-								{% if book_due(item['Due Date']) %}
+								{% if book_due(item['DueDate']) %}
 									<td>{{calculate_dues(item['BookID'],session['token'])}}</td>
 								{% else %}
-									<td>nil</td>
+									<td>--</td>
 								{% endif %}
 							</tr>
 							
@@ -116,12 +116,12 @@
 				{% else %}
 					<tbody>
 						<tr>
-							<td>nil</td>
-							<td>nil</td>
-							<td>nil</td>
-							<td>nil</td>
-							<td>nil</td>
-							<td>nil</td>
+							<td>--</td>
+							<td>--</td>
+							<td>--</td>
+							<td>--</td>
+							<td>--</td>
+							<td>--</td>
 						</tr>
 					</tbody>
 				{% endif %}
