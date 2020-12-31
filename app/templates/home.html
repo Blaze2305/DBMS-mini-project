@@ -1,47 +1,266 @@
 {% extends "baseHtml.html" %}
 
 {% block navbarItems %}
-	<ul class="navbar__links">
-		{% if not session['token'] %}
-			<a href="{{url_for('loginHandler')}}">
-				<li>Login</li>
-			</a>
+<ul class="navbar__links">
+	{% if not session['token'] %}
+	<a href="{{url_for('loginHandler')}}">
+		<li>Login</li>
+	</a>
 		{% else %}
-			<a href="{{url_for('logoutHandler')}}">
-				<li>Logout</li>
+		<a href="{{url_for('logoutHandler')}}">
+			<li>Logout</li>
 			</a>
 			<a href="{{url_for('profileHandler')}}">
 				<li>Profile</li>
 			</a>
-		{% endif %}
-	</ul>
+			{% endif %}
+		</ul>
 {% endblock %}
 
 
 
 {% block bodyContent %}
 
-	<section id="section01" class="demo">
+
+<section id="section01" class="demo">
 		<img src="{{url_for('static',filename='images/index.jpg')}}" 
 			 alt="library">
 		<h1 style="text-align: center;padding-top:2rem;">
-			Library and Information Centre, NIE is one of the best engineering college libraries among engineering college in the state. <br>&nbsp;It started its function with a vision to serve the students and faculty with information needed for them. It mainly holds books related to engineering and allied subjects. <br> The National Institute of Engineering established its library in the year 1946. The library collection is more than lakh volumes. The library has rich collection of Abstracts, Dictionaries, Yearbooks, Textbooks, , Encyclopaedias and other General books including Kannada novels. The library is also subscribing for more than 54 Technical Journals, 30 general magazines and has full text online database like IEEE, ASCE,ASME, Taylor & Francis, Springer, Institution of Civil Engineers, Emerald, Knimbus, J-GATE (Engineering and Technology), Sententia- An Assistive Tool for Formal Writing (NetAnalytiks), e-Books: Springer, Elsevier, Taylor & Francis / CRC, McGraw Hill, Packt and N-List e-resources (INFLIBNET).
+			Library and Information Centre, NIE is one of the best engineering college libraries among engineering college in the state. 
+			<br>&nbsp;It started its function with a vision to serve the students and faculty with information needed for them. It mainly holds books related to engineering and allied subjects.
+			<br> The National Institute of Engineering established its library in the year 1946. The library collection is more than lakh volumes. The library has rich collection of Abstracts, Dictionaries, Yearbooks, Textbooks, , Encyclopaedias and other General books including Kannada novels. The library is also subscribing for more than 54 Technical Journals, 30 general magazines and has full text online database like IEEE, ASCE,ASME, Taylor & Francis, Springer, Institution of Civil Engineers, Emerald, Knimbus, J-GATE (Engineering and Technology), Sententia- An Assistive Tool for Formal Writing (NetAnalytiks), e-Books: Springer, Elsevier, Taylor & Francis / CRC, McGraw Hill, Packt and N-List e-resources (INFLIBNET).
 		</h1>
 		<br>
 	</section>
+	<br>
+		<hr>
+	<br>
 	<section>
 		<img src="{{url_for('static',filename='images/building.jpg')}}" 
 			 alt="library">
 		<h1 style="text-align: center;padding-top:2rem;">
-			Library and Information Centre, NIE is one of the best engineering college libraries among engineering college in the state. <br>&nbsp;It started its function with a vision to serve the students and faculty with information needed for them. It mainly holds books related to engineering and allied subjects. <br> The National Institute of Engineering established its library in the year 1946. The library collection is more than lakh volumes. The library has rich collection of Abstracts, Dictionaries, Yearbooks, Textbooks, , Encyclopaedias and other General books including Kannada novels. The library is also subscribing for more than 54 Technical Journals, 30 general magazines and has full text online database like IEEE, ASCE,ASME, Taylor & Francis, Springer, Institution of Civil Engineers, Emerald, Knimbus, J-GATE (Engineering and Technology), Sententia- An Assistive Tool for Formal Writing (NetAnalytiks), e-Books: Springer, Elsevier, Taylor & Francis / CRC, McGraw Hill, Packt and N-List e-resources (INFLIBNET).
+			Library and Information Centre, NIE is one of the best engineering college libraries among engineering college in the state. 
+			<br>&nbsp;It started its function with a vision to serve the students and faculty with information needed for them. It mainly holds books related to engineering and allied subjects. 
+			<br> The National Institute of Engineering established its library in the year 1946. The library collection is more than lakh volumes. The library has rich collection of Abstracts, Dictionaries, Yearbooks, Textbooks, , Encyclopaedias and other General books including Kannada novels. 
+			<br>The library is also subscribing for more than 54 Technical Journals, 30 general magazines and has full text online database like IEEE, ASCE,ASME, Taylor & Francis, Springer, Institution of Civil Engineers, Emerald, Knimbus, J-GATE (Engineering and Technology), Sententia- An Assistive Tool for Formal Writing (NetAnalytiks), e-Books: Springer, Elsevier, Taylor & Francis / CRC, McGraw Hill, Packt and N-List e-resources (INFLIBNET).
 		</h1>
 		<br>
 	</section>
+	<br>
+		<hr>
+	<br>
+
+	<section>
+		<div class="columns">
+			<div class="column" id="cardColumns">
+				<div class="cardContainer">
+					<img id='cardImage' src="{{url_for('static',filename='images/time.jpg')}}" alt="" />
+					<div class="timingTitleBack">
+						<p class="cardTitle">Timings</p>
+					</div>
+					<div class="timingOverlay">
+						<div class="timingOverlayBack">
+							<p class="overlayText">
+								<br>
+								<br>&nbsp;&nbsp;Mon - Fri : 9 am to 9 pm 
+								<br>&nbsp;&nbsp;Sat : 9 am to 5 pm
+								<br>&nbsp;&nbsp;Sun : 9 am to 5 pm 
+								<br><br>
+							</p>
+						</div>
+					</div>
+					<!-- <div class="cardButton"><a href="#"> BUTTON </a></div> -->
+				  </div>
+			</div>
+			<div class="column" id="cardColumns">
+				<div class="cardContainer">
+					<img id='cardImage' src="{{url_for('static',filename='images/uni-building.jpg')}}" alt="" />
+					<div class="titleBack">
+						<p class="cardTitle">NIE</p>
+					</div>
+					<div class="overlay">
+						<div class="overlayBack">
+							<p class="overlayText">
+								Check out other facilities available at the National Institute of Engineering
+							</p>
+						</div>
+					</div>
+					<div class="cardButton"><a href="http://nie.ac.in/"> Go to Website </a></div>
+				  </div>
+			</div>
+			<div class="column" id="cardColumns">
+				<div class="cardContainer">
+					<img id='cardImage' src="{{url_for('static',filename='images/books.jpg')}}" alt="" />
+					<div class="titleBack">
+						<p class="cardTitle">Z Library</p>
+					</div>
+					<div class="overlay">
+						<div class="overlayBack">
+							<p class="overlayText">
+								Check out Z-library, the worlds largest collection of books, articles and papers.
+							</p>
+						</div>
+					</div>
+					<div class="cardButton"><a href="https://1lib.in/"> Go to Z-lib </a></div>
+				  </div>
+			</div>
+		</div>
+	</section>
+
+	<br><br><br><br><br>
+		<hr>
+	<br>
 	<style>
 		html {
 			background-color: black;
 			color: white;
 		}
+
+		hr{
+			width: 50%;
+			margin: auto;
+			color:white;
+		}
+
+		section{
+			padding: 30px;
+		}
+
+		.cardContainer {
+			position: relative;
+			margin-top: 50px;
+			width: 100%;
+			height: 300px;
+		}
+
+		#cardColumns{
+			padding: 15px 15px 0px;
+		}
+
+		.overlay {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: rgba(0, 0, 0, 0);
+			transition: background 0.5s ease;
+		}
+			
+		.timingOverlay {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: rgba(0, 0, 0, 0);
+			transition: background 0.5s ease;
+		}
+
+		.overlayBack{
+			width: 100%;
+			position: absolute;	
+			background-color: rgba(255,255,255,0.9);
+			margin-top: 40%;
+			padding: 5%;
+			
+		}
+
+
+
+		.timingOverlayBack{
+			width: 100%;
+			position: absolute;
+			background-color: rgba(255,255,255,0.5);
+			margin-top: 10%;
+			padding: 5%;
+		}
+		
+		
+		.overlayText{
+			color: black;
+			background-color: transparent;
+			font-size: larger;
+			font-weight: 600;
+			align-items: center;
+			word-wrap: break-word;
+		}
+
+		.cardContainer:hover .overlay {
+			display: block;
+			background: rgba(0, 0, 0, .3);
+		}
+
+		.cardImage {
+			position: absolute;
+			width: 500px;
+			height: 300px;
+			left: 0;
+		}
+
+		.titleBack{
+			background-color: rgba(255,255,255,0.5);
+			position: absolute;
+			width: 100%;
+			left: 0;
+			top: 20%;
+			text-align: center;
+			text-transform: uppercase;
+			z-index: 1;
+			transition: top .5s ease;
+		}
+
+		.timingTitleBack{
+			/* background-color: rgba(255,255,255,0.5); */
+			background-color: transparent;
+			position: absolute;
+			width: 100%;
+			left: 0;
+			top: 20%;
+			text-align: center;
+			text-transform: uppercase;
+			z-index: 1;
+			transition: top .5s ease;
+		}
+		
+		
+		.cardTitle {
+			background-color: transparent;
+			font-weight: 700;
+			font-size: 30px;
+			color: black;
+			
+		}
+
+		.cardContainer:hover .cardTitle {
+			top: 90px;
+		}
+
+		.cardButton {
+			position: absolute;
+			width: 100%;
+			left:0;
+			top: 180px;
+			text-align: center;
+			opacity: 0;
+			transition: opacity .35s ease;
+			background-color: transparent;
+		}
+
+		.cardButton a {
+			width: 200px;
+			padding: 12px 48px;
+			text-align: center;
+			color: white;
+			border: solid 2px white;
+			z-index: 1;
+		}
+
+		.cardContainer:hover .cardButton {
+			opacity: 1;
+		}
+
+
 	</style>
 {% endblock %}
 
