@@ -6,15 +6,17 @@
 	<a href="{{url_for('loginHandler')}}">
 		<li>Login</li>
 	</a>
-		{% else %}
+	{% else %}
 		<a href="{{url_for('logoutHandler')}}">
 			<li>Logout</li>
-			</a>
+		</a>
+		{% if not is_admin(session['token']) %}
 			<a href="{{url_for('profileHandler')}}">
 				<li>Profile</li>
 			</a>
-			{% endif %}
-		</ul>
+		{% endif %}
+	{% endif %}
+	</ul>
 {% endblock %}
 
 
@@ -85,7 +87,7 @@
 							</p>
 						</div>
 					</div>
-					<div class="cardButton"><a href="http://nie.ac.in/"> Go to Website </a></div>
+					<div class="cardButton"><a href="http://nie.ac.in/"  target="_blank"> Go to Website </a></div>
 				  </div>
 			</div>
 			<div class="column" id="cardColumns">
@@ -101,7 +103,7 @@
 							</p>
 						</div>
 					</div>
-					<div class="cardButton"><a href="https://1lib.in/"> Go to Z-lib </a></div>
+					<div class="cardButton"><a href="https://1lib.in/" target="_blank"> Go to Z-lib </a></div>
 				  </div>
 			</div>
 		</div>

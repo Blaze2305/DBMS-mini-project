@@ -45,21 +45,6 @@ def logoutHandler():
 
 
 
-@app.route("/users/<id>",methods = ['GET'])
-def userHandler(id):
-	# Render out a users profile page as an admin
-	if request.method == "GET":
-
-		userDataResponse = user.getUserFromID(id)
-		if not userDataResponse['status']:
-			return Response(userDataResponse['message'],400)
-
-		userData = userDataResponse['message']
-		borrowData = userDataResponse['borrows']
-		return render_template("profile.html",userData = userData, borrowData =  borrowData,PageTitle="User")
-
-
-
 @app.route("/profile",methods = ['GET'])
 def profileHandler():
 	if request.method == "GET":
@@ -68,6 +53,43 @@ def profileHandler():
 			return Response("Token missing , please logout and log back in",400)
 		
 		userDataResponse = user.getUserFromToken(token)
+		if not userDataResponse['status']:
+			return Response(userDataResponse['message'],400)
+
+		userData = userDataResponse['message']
+		borrowData = userDataResponse['borrows']
+		return render_template("profile.html",userData = userData, borrowData = borrowData,PageTitle="User")
+
+
+#####################################################################################
+# 							ADMIN ONLY ROUTES BELOW									#
+#####################################################################################
+
+@app.route("/users",methods=['GET'])
+def userListHandler():
+	if request.method == "GET":
+		userData = user.getUsersList()
+		if not userData['status']:
+			return Response(userData['message'],400)
+		return render_template("userListPage.html",PageTitle="Users",userDataList=userData['message'])
+
+	
+@app.route("/users/search",methods=['POST'])
+def userFilterHandler():
+	if request.method == "POST":
+		data = request.form
+		UserList = user.getUsersList(data)
+		if not UserList['status']:
+			return Response(UserList['status'],400)
+		return render_template("userListPage.html",userDataList = UserList['message'],searchData=data,PageTitle="Users")
+
+
+@app.route("/users/<id>",methods = ['GET'])
+def userHandler(id):
+	# Render out a users profile page as an admin
+	if request.method == "GET":
+
+		userDataResponse = user.getUserFromID(id)
 		if not userDataResponse['status']:
 			return Response(userDataResponse['message'],400)
 

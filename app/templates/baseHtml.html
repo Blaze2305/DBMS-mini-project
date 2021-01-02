@@ -31,6 +31,16 @@
 					<a href="{{url_for('bookCatalogueHandler')}}">
 						<li>Catalogue</li>
 					</a>
+					{% if session['token'] %}
+						{% if is_admin(session['token']) %}
+							<a href="{{url_for('userListHandler')}}">
+								<li>Student Profiles</li>
+							</a>
+							<a href="#">
+								<li>Book Returns</li>
+							</a>
+						{% endif %}
+					{% endif %}
 				</ul>
 			</div>
 			<div class="column">

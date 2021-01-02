@@ -1,0 +1,197 @@
+{% extends "baseHtml.html" %}
+
+{% block navbarItems %}
+	<ul class="navbar__links">
+		{% if not session['token'] %}
+		<a href="{{url_for('loginHandler')}}">
+			<li>Login</li>
+		</a>
+		{% else %}
+			<a href="{{url_for('logoutHandler')}}">
+				<li>Logout</li>
+			</a>	
+		{% endif %}
+	</ul>
+{% endblock %}
+
+{% block imports %}
+	<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/dropdown.css') }}">
+	<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/userList.css') }}">
+	<script src="{{url_for('static',filename='js/sortable.js')}}"></script>
+{% endblock %}
+
+{% block bodyContent %}
+<br><br><br><br>
+	<div class="container">
+		<form action="/users/search" method="POST">
+
+			<div class="columns  is-centered is-mobile is-8">
+				<div class="column">
+					Search By Name
+					<div class="searchbox">
+						<div class="sw">
+							<input  type="search" id='NameSearchBox' name='NameSearchBox' class="search" placeholder="Search..." style="font-size: medium;"/>
+						</div>
+					</div>
+				</div>
+				<div class="column">
+					Search By USN
+					<div class="searchbox">
+						<div class="sw">
+							<input  type="search" id='UsnSearchBox' name='UsnSearchBox' class="search" placeholder="Search..." style="font-size: medium;"/>
+						</div>
+					</div>
+				</div>
+				<div class="column">
+					&nbsp;&nbsp;&nbsp;Search by Dept <br>
+					<span class="custom-dropdown">
+						<select id='deptSelect' name='deptSelect' style="color: black;">
+							<option>---</option>
+							<option>CSE</option>
+							<option>ISE</option>
+							<option>Mechanical</option>
+							<option>IPE</option>
+							<option>Civil</option>
+							<option>EEE</option>
+							<option>ECE</option>
+						</select>
+					</span>
+
+				</div>
+				<div class="column">
+					&nbsp;&nbsp;&nbsp;Search by Year
+					<span class="custom-dropdown">
+						<select id='yearSelect' name='yearSelect' style="width: 200px;color: black;">
+							<option>---</option>
+							<option>Year 1</option>  
+							<option>Year 2</option>
+							<option>Year 3</option>
+							<option>Year 4</option>
+						</select>
+					</span>
+				</div>
+				<div class="column">
+					<span class="custom_button">
+						<button style="font-size: larger;color: black;font-weight: 400;" type="button" onclick="resetForm()">Reset</button>
+					</span>
+				</div>
+				<div class="column">
+					<span class="custom_button">
+						<button type="submit" style="font-size: larger;color: black;font-weight: 400;">Search</button>
+					</span>
+				</div>
+			</div>	
+		</form>
+	</div>
+	<br><br><br>
+	<hr>
+	<table class="table  is-striped is-hoverable is-fullwidth sortable">
+		<thead>
+			<tr>
+				<th>
+					<abbr title="Serial Number">
+						S.No
+					</abbr>
+				</th>
+				<th>
+					<abbr title="Book Name">
+						Name
+					</abbr>
+				</th>
+				<th>
+					<abbr title="Borrowed On">
+						USN
+					</abbr>
+				</th>
+				<th>
+					<abbr title="Due Date">
+						Dept
+					</abbr>
+				</th>
+				<th>
+					<abbr title="Returned On">
+						Year
+					</abbr>
+				</th>
+				<th>
+					<abbr title="Section">
+						Section
+					</abbr>
+				</th>
+				<th>
+					<abbr title="Borrowed Books">
+						Borrowed Books
+					</abbr>
+				</th>
+			</tr>
+		</thead>
+		{% if userDataList %}
+			<tbody>
+				{% for item in userDataList %}
+						<tr onclick="window.location='/users/{{item._id}}'">
+							<td style="color: white;">{{loop.index}}</td>
+							<td>{{item['Name']}}</td>
+							<td>{{item['_id']}}</td>
+							<td>{{item['Department']}}</td>
+							<td>{{item['Year']}}</td>
+							<td>{{item['Section']}}</td>
+							<td>{{get_number_of_borrowed_books(item['_id'])}}</td>
+						</tr>
+				{% endfor %}
+			</tbody>
+		{% else %}
+			<tbody>
+				<tr>
+					<td>--</td>
+					<td>--</td>
+					<td>--</td>
+					<td>--</td>
+					<td>--</td>
+					<td>--</td>
+					<td>--</td>
+				</tr>
+			</tbody>
+		{% endif %}
+	</table>
+	{% if not userDataList  %}
+		<div>
+			<img src="{{url_for('static',filename='images/empty.svg')}}" style="max-width: 100%;height: auto;" >
+			<div class="message-box">
+				<br><br><br><br><br><br><br><br><br>
+				<h1>No Users found</h1>
+				<p>The search you made has no matching results. Try another filter</p>
+			</div>
+		</div>
+	{% endif %}
+
+{% if searchData %}
+	<script>
+		$("#yearSelect").val("{{searchData['yearSelect']}}")
+		$("#deptSelect").val("{{searchData['deptSelect']}}")
+		$("#NameSearchBox").val("{{searchData['NameSearchBox']}}")
+		$("#UsnSearchBox").val("{{searchData['UsnSearchBox']}}")
+	</script>
+{% endif %}
+
+
+<script>
+	function resetForm(){
+		$("#yearSelect").val("---")
+		$("#deptSelect").val("---")
+		$("#NameSearchBox").val('')
+		$("#UsnSearchBox").val('')
+	}
+</script>
+
+
+<style>
+	table.sortable th:not(.sorttable_sorted):not(.sorttable_sorted_reverse):not(.sorttable_nosort):after { 
+	    content: " \25B4\25BE" 
+	}
+
+	html{
+		background-color: black;
+	}
+</style>
+
+{% endblock %}

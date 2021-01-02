@@ -11,9 +11,11 @@
 			<a href="{{url_for('logoutHandler')}}">
 				<li>Logout</li>
 			</a>
-			<a href="{{url_for('profileHandler')}}">
-				<li>Profile</li>
-			</a>
+			{% if not is_admin(session['token']) %}
+				<a href="{{url_for('profileHandler')}}">
+					<li>Profile</li>
+				</a>
+			{% endif %}
 		{% endif %}
 	</ul>
 {% endblock %}

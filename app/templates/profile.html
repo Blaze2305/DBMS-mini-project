@@ -2,146 +2,223 @@
 
 
 {% block navbarItems %}
-	<ul class="navbar__links">
-        <a href="{{url_for('logoutHandler')}}">
-            <li>Logout</li>
-        </a>
-    </ul>
+<ul class="navbar__links">
+	<a href="{{url_for('logoutHandler')}}">
+		<li>Logout</li>
+	</a>
+</ul>
+{% endblock %}
+
+{% block imports %}
+	<script src="{{url_for('static',filename='js/sortable.js')}}"></script>
 {% endblock %}
 
 {% block bodyContent %}
-	<br><br><br>
-	<div class="columns is-multiline">
-		<div class="column ">
-			<img src="{{userData['PhotoUrl']}}" alt="">
-		</div>
-		<div class="column is-vcentered mt-6" style="word-wrap: break-word;">
-			<br>
-			<article class="tile is-child is-primary">
-				<p class="title">Name</p>
-				<p class="subtitle">{{userData['Name']}}</p>
-			</article>
-			<br>
-			<article class="tile is-child  is-primary">
-				<p class="title">Contact</p>
-				<p class="subtitle">{{userData['Contact']}}</p>
-			</article>
-		</div>
-		<div class="column is-vcentered mt-6" style="word-wrap: break-word;">
-			<br>
-			<article class="tile is-child  is-primary">
-				<p class="title">Date of Birth</p>
-				<p class="subtitle">{{userData['DOB']}}</p>
-			</article>
-			<br>
-			<article class="tile is-child  is-primary">
-				<p class="title">Department</p>
-				<p class="subtitle">{{userData['Department']}}</p>
-			</article>
-		</div>
-		<div class="column is-vcentered mt-6" style="word-wrap: break-word;">
-			<br>
-			<article class="tile is-child  is-primary">
-				<p class="title">Section</p>
-				<p class="subtitle">{{userData['Section']}}</p>
-			</article>
-			<br>
-			<article class="tile is-child  is-primary">
-				<p class="title">Year</p>
-				<p class="subtitle">{{userData['Year']}}</p>
-				</article>
-			</div>
-		</div>
-		<br><br><br>
-		<div class="ml-6">
-			<hi class="title">Borrows</hi>
-			<br><br>
-			<table class="table  is-striped is-hoverable is-fullwidth">
-				<thead>
-					<tr>
-						<th>
-							<abbr title="Serial Number">
-								S.No
-							</abbr>
-						</th>
-						<th>
-							<abbr title="Book Name">
-								Name
-							</abbr>
-						</th>
-						<th>
-							<abbr title="Borrowed On">
-								Borrowed On
-							</abbr>
-						</th>
-						<th>
-							<abbr title="Due Date">
-								Due Date
-							</abbr>
-						</th>
-						<th>
-							<abbr title="Returned On">
-								Returned On
-							</abbr>
-						</th>
-						<th>
-							<abbr title="Dues">
-								Dues
-							</abbr>
-						</th>
-					</tr>
-				</thead>
-				{% if borrowData%}
-					{% for item in borrowData %}
-						<tbody>
-							<tr>
-								<th style="color: white;">{{loop.index}}</th>
-								<td>{{item['Name']}}</td>
-								<td>{{format_date(item['BorrowedOn'])}}</td>
-								<td>{{format_date(item['DueDate'])}}</td>
-								{% if not item['ReturnedOn'] %}
-									<td>--</td>
-								{% else %}
-									<td>{{item['ReturnedOn']}}</td>
-								{% endif %}
-								{% if book_due(item['DueDate']) %}
-									<td>{{calculate_dues(item['BookID'],session['token'])}}</td>
-								{% else %}
-									<td>--</td>
-								{% endif %}
-							</tr>
-							
-						</tbody>
-					{% endfor %}
-				{% else %}
-					<tbody>
-						<tr>
-							<td>--</td>
-							<td>--</td>
-							<td>--</td>
-							<td>--</td>
-							<td>--</td>
-							<td>--</td>
-						</tr>
-					</tbody>
-				{% endif %}
-			</table>
-		</div>
+<br><br><br>
+<div class="columns is-multiline">
+	<div class="column ">
+		<img src="{{userData['PhotoUrl']}}" alt="">
 	</div>
+	<div class="column is-vcentered mt-6" style="word-wrap: break-word;">
+		<br>
+		<article class="tile is-child is-primary">
+			<p class="title">Name</p>
+			<p class="subtitle">{{userData['Name']}}</p>
+		</article>
+		<br>
+		<article class="tile is-child  is-primary">
+			<p class="title">Contact</p>
+			<p class="subtitle">{{userData['Contact']}}</p>
+		</article>
+		<br>
+		<article class="tile is-child  is-primary">
+			<p class="title">Date of Birth</p>
+			<p class="subtitle">{{userData['DOB']}}</p>
+		</article>
+	</div>
+	<div class="column is-vcentered mt-6" style="word-wrap: break-word;">
+		<br>
+		<article class="tile is-child  is-primary">
+			<p class="title">USN</p>
+			<p class="subtitle">{{userData['_id']}}</p>
+		</article>
+		<br>
+		<article class="tile is-child  is-primary">
+			<p class="title">Department</p>
+			<p class="subtitle">{{userData['Department']}}</p>
+		</article>
+	</div>
+	<div class="column is-vcentered mt-6" style="word-wrap: break-word;">
+		<br>
+		<article class="tile is-child  is-primary">
+			<p class="title">Section</p>
+			<p class="subtitle">{{userData['Section']}}</p>
+		</article>
+		<br>
+		<article class="tile is-child  is-primary">
+			<p class="title">Year</p>
+			<p class="subtitle">{{userData['Year']}}</p>
+		</article>
+	</div>
+</div>
+<br><br><br>
+<div class="ml-6">
+	<hi class="title">Borrows</hi>
+	<br><br>
+	<table class="table is-striped is-hoverable is-fullwidth sortable" id='bookTable'>
+		<thead>
+			<tr>
+				<!-- <th onclick="sortTable(0)"> -->
+				<th>	
+					<abbr title="Serial Number">
+						S.No
+					</abbr>
+				</th>
+				<th>
+					<abbr title="Book Name">
+						Name
+					</abbr>
+				</th>
+				<th>
+					<abbr title="Borrowed On">
+						Borrowed On
+					</abbr>
+				</th>
+				<th>
+					<abbr title="Due Date">
+						Due Date
+					</abbr>
+				</th>
+				<th>
+					<abbr title="Returned On">
+						Returned On
+					</abbr>
+				</th>
+				<th>
+					<abbr title="Dues">
+						Dues
+					</abbr>
+				</th>
+			</tr>
+		</thead>
+		{% if borrowData%}
+		<tbody>
+		{% for item in borrowData %}
+				<tr>
+					<td style="color: white;">{{loop.index}}</td>
+					<td>{{item['Name']}}</td>
+					<td>{{format_date(item['BorrowedOn'])}}</td>
+					<td>{{format_date(item['DueDate'])}}</td>
+					{% if not item['ReturnedOn'] %}
+					<td>--</td>
+					{% else %}
+					<td>{{item['ReturnedOn']}}</td>
+					{% endif %}
+					{% if book_due(item['DueDate']) %}
+						<td>{{calculate_dues(item['BookID'],session['token'],userData['_id'])}}</td>
+					{% else %}
+					<td>--</td>
+					{% endif %}
+				</tr>
 
-	<style>
-		html{
-			background-color: black;
-		}
+				{% endfor %}
+		</tbody>
+		{% else %}
+			<tbody>
+				<tr>
+					<td>--</td>
+					<td>--</td>
+					<td>--</td>
+					<td>--</td>
+					<td>--</td>
+					<td>--</td>
+				</tr>
+			</tbody>
+		{% endif %}
+	</table>
+	<br><br>
+</div>
+</div>
 
-		.title{
-			color: white;
+<!-- <script>
+	function sortTable(n) {
+		var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+		table = document.getElementById("bookTable");
+		switching = true;
+		dir = "asc";
+		while (switching) {
+			switching = false;
+			rows = table.rows;
+			for (i = 1; i < (rows.length - 1); i++) {
+				shouldSwitch = false;
+				x = rows[i].getElementsByTagName("TD")[n];
+				y = rows[i + 1].getElementsByTagName("TD")[n];
+				if (dir == "asc") {
+					if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+						shouldSwitch = true;
+						break;
+					}
+				} else if (dir == "desc") {
+					if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+						shouldSwitch = true;
+						break;
+					}
+				}
+			}
+			if (shouldSwitch) {
+				rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+				switching = true;
+				switchcount++;
+			} else {
+				if (switchcount == 0 && dir == "asc") {
+					dir = "desc";
+					switching = true;
+				}
+			}
 		}
+	}
 
-		.subtitle{
-			color:  rgba(255, 255, 255, 0.904);
+
+
+	function sortTableNumber() {
+		var table, rows, switching, i, x, y, shouldSwitch;
+		table = document.getElementById("bookTable");
+		switching = true;
+		while (switching) {
+			switching = false;
+			rows = table.rows;
+			for (i = 1; i < (rows.length - 1); i++) {
+				shouldSwitch = false;
+				x = rows[i].getElementsByTagName("TD")[0];
+				y = rows[i + 1].getElementsByTagName("TD")[0];
+				if (Number(x.innerHTML) > Number(y.innerHTML)) {
+					shouldSwitch = true;
+					break;
+				}
+			}
+			if (shouldSwitch) {
+				rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+				switching = true;
+			}
 		}
-	</style>
+	}
+</script> -->
+
+<style>
+	html {
+		background-color: black;
+	}
+
+	.title {
+		color: white;
+	}
+
+	.subtitle {
+		color: rgba(255, 255, 255, 0.904);
+	}
+	table.sortable th:not(.sorttable_sorted):not(.sorttable_sorted_reverse):not(.sorttable_nosort):after { 
+    content: " \25B4\25BE" 
+	}
+
+</style>
 {% endblock %}
-	
-

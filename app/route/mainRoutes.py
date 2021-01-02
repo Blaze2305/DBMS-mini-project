@@ -3,6 +3,12 @@ from app import app
 from flask import render_template, request,session,Response,flash
 from app.db import books
 
+
+@app.before_request
+def before():
+	print(f"CURRENT ROUTE => {request.url_rule}")
+
+
 @app.route("/")
 def index():
 	print(app.url_map)
@@ -46,7 +52,6 @@ def filteredCatalouge():
 def reserveHandler():
 	if request.method == "POST":
 		data = request.json
-		print(data)
 		reserveStatus = books.reserveBook(data['_id'],data['name'],session['token'])
 		if not reserveStatus['status']:
 			flash(reserveStatus['message'])

@@ -12,9 +12,11 @@
 			</a>
 		{% endif %}
 		{% if session['token'] %}
-			<a href="{{url_for('profileHandler')}}">
-				<li>Profile</li>
-			</a>
+			{% if not is_admin(session['token']) %}
+				<a href="{{url_for('profileHandler')}}">
+					<li>Profile</li>
+				</a>
+			{% endif %}
 		{% endif %}
 	</ul>
 {% endblock %}
@@ -69,6 +71,11 @@
 				</div>
 				<div class="column">
 					<span class="custom_button">
+						<button style="font-size: larger;color: black;font-weight: 400;" type="button" onclick="resetForm()">Reset</button>
+					</span>
+				</div>
+				<div class="column">
+					<span class="custom_button">
 						<button type="submit" style="font-size: larger;color: black;font-weight: 400;">Search</button>
 					</span>
 				</div>
@@ -118,6 +125,16 @@
 	</script>
 {% endif %}
 
+<script>
+	function resetForm(){
+		$("#yearSelect").val("---")
+		$("#deptSelect").val("---")
+		$("#searchbox").val('')
+	}
+</script>
+
+
+
 <style>
 	html{
 		background-color: black;
@@ -127,35 +144,35 @@
 	}
 
 	@media (max-width: 450px) {
-  .message-box {
-    top: 50%;
-    left: 50%;
-    margin-top: -100px;
-    margin-left: -190px;
-	text-align: center;
-	background-color: transparent;
-  }
-}
+		.message-box {
+			top: 50%;
+			left: 50%;
+			margin-top: -100px;
+			margin-left: -190px;
+			text-align: center;
+			background-color: transparent;
+		}
+	}
 
-.message-box {
-  height: 200px;
-  width: 380px;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  margin-top: -100px;
-  margin-left: 50px;
-  color: #FFF;
-  font-family: Roboto;
-  font-weight: 300;
-  background-color: transparent;
-}
-.message-box h1 {
-  font-size: 50px;
-  line-height: 46px;
-  margin-bottom: 40px;
-  background-color: transparent;
-}
+	.message-box {
+		height: 200px;
+		width: 380px;
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		margin-top: -100px;
+		margin-left: 50px;
+		color: #FFF;
+		font-family: Roboto;
+		font-weight: 300;
+		background-color: transparent;
+	}
+	.message-box h1 {
+		font-size: 50px;
+		line-height: 46px;
+		margin-bottom: 40px;
+		background-color: transparent;
+	}
 </style>
 
 <!-- 

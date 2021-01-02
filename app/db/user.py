@@ -3,7 +3,7 @@ from uuid import uuid4 # UUID gen lib
 from hashlib import sha256  # Hashing library
 from app.constants import tokenCollection,authCollection,borrowsCollection,usersCollection # import required collections 
 from pymongo.errors import ConnectionFailure,DuplicateKeyError # Pymongo errors
-
+from re import compile,IGNORECASE
 
 # login the user
 def userLogin(userData):
@@ -170,3 +170,44 @@ def getUsersBorrowedBooks(userId):
 		return {'status':False,'message':"Unable to connect to database"}
 	# return the borrow list
 	return {'status':True,'message':borrowList}
+
+
+
+# Get list of all users
+def getUsersList(userFilter={}):
+	'''
+		Function to get  list of all the users in the database
+		params:
+			userFilter : <dict> The pymongo filter to use, default is {} ie no filter
+
+		returns:
+			<dict> {status:True,message:<List(dict):List of user data>} if success
+					{status:False,message:Error Message} if failure
+	'''
+	# create a empty dict to store the final mongoDB filter generated
+	finalFilter = {"Type":"Student"}
+	# if the filter is passed we convert it into a mongodb thing else we dont
+	if userFilter:
+		# if the filter passed has an entry for the Name search we create a regex that matches the string passed with all 
+		# the USN with the string being  anywhere in the Name
+		# ie .*<str here>.*
+		if userFilter['NameSearchBox']:
+			finalFilter['Name'] = {"$regex":compile(".*"+userFilter['NameSearchBox']+".*",IGNORECASE)}
+		# if the filter passed has an entry for the USN search we create a regex that matches the string passed
+		#  with all the USN  with the string being anywhere in the USN
+		# ie .*<str here>.*
+		if userFilter['UsnSearchBox']:
+			finalFilter['_id'] = {"$regex":compile(".*"+userFilter['UsnSearchBox']+".*",IGNORECASE)}
+		# If the filter passed has a value for the department ( ie anything exceptt --- , cuz --- is empty in our case) then we add that to the dict
+		if userFilter['deptSelect']!="---":
+			finalFilter['Department'] = userFilter['deptSelect']
+		# If the filter passed has a value for the year ( ie anything exceptt --- , cuz --- is empty in our case) then we add that to the dict
+		if userFilter['yearSelect']!='---':
+			finalFilter['Year'] = int(userFilter['yearSelect'].split(" ")[1])
+
+	try:
+		# use the given filter and fetch the users in the collection
+		userDataList = list(usersCollection.find(finalFilter,{"PhotoUrl":0,"Contact":0,"DOB":0,"Type":0}))
+	except ConnectionFailure:
+		return {'status':False,'message':"Unable to Connect to database"}
+	return {'status':True,'message':userDataList}
