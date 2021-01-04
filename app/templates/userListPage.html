@@ -30,17 +30,39 @@
 					Search By Name
 					<div class="searchbox">
 						<div class="sw">
-							<input  type="search" id='NameSearchBox' name='NameSearchBox' class="search" placeholder="Search..." style="font-size: medium;"/>
+							<input  type="search" id='nameSearchBox' name='nameSearchBox' class="search" placeholder="Name..." style="font-size: medium;"/>
+						</div>
+					</div>
+					Search By USN
+					<div class="searchbox">
+						<div class="sw">
+							<input  type="search" id='usnSearchBox' name='usnSearchBox' class="search" placeholder="USN..." style="font-size: medium;"/>
 						</div>
 					</div>
 				</div>
 				<div class="column">
-					Search By USN
-					<div class="searchbox">
-						<div class="sw">
-							<input  type="search" id='UsnSearchBox' name='UsnSearchBox' class="search" placeholder="Search..." style="font-size: medium;"/>
-						</div>
-					</div>
+					&nbsp;&nbsp;&nbsp;Search by Year
+					<span class="custom-dropdown">
+						<select id='yearSelect' name='yearSelect' style="width: 200px;color: black;">
+							<option>---</option>
+							<option>Year 1</option>  
+							<option>Year 2</option>
+							<option>Year 3</option>
+							<option>Year 4</option>
+						</select>
+					</span>
+					
+					<br>
+					&nbsp;&nbsp;&nbsp;Search by Section
+					<span class="custom-dropdown">
+						<select id='sectionSelect' name='sectionSelect' style="width: 200px;color: black;">
+							<option>---</option>
+							<option>A</option>  
+							<option>B</option>
+							<option>C</option>
+						</select>
+					</span>
+				
 				</div>
 				<div class="column">
 					&nbsp;&nbsp;&nbsp;Search by Dept <br>
@@ -56,26 +78,11 @@
 							<option>ECE</option>
 						</select>
 					</span>
-
-				</div>
-				<div class="column">
-					&nbsp;&nbsp;&nbsp;Search by Year
-					<span class="custom-dropdown">
-						<select id='yearSelect' name='yearSelect' style="width: 200px;color: black;">
-							<option>---</option>
-							<option>Year 1</option>  
-							<option>Year 2</option>
-							<option>Year 3</option>
-							<option>Year 4</option>
-						</select>
-					</span>
 				</div>
 				<div class="column">
 					<span class="custom_button">
 						<button style="font-size: larger;color: black;font-weight: 400;" type="button" onclick="resetForm()">Reset</button>
 					</span>
-				</div>
-				<div class="column">
 					<span class="custom_button">
 						<button type="submit" style="font-size: larger;color: black;font-weight: 400;">Search</button>
 					</span>
@@ -94,22 +101,22 @@
 					</abbr>
 				</th>
 				<th>
-					<abbr title="Book Name">
+					<abbr title="Student Name">
 						Name
 					</abbr>
 				</th>
 				<th>
-					<abbr title="Borrowed On">
+					<abbr title="Student USN">
 						USN
 					</abbr>
 				</th>
 				<th>
-					<abbr title="Due Date">
+					<abbr title="Department">
 						Dept
 					</abbr>
 				</th>
 				<th>
-					<abbr title="Returned On">
+					<abbr title="Year">
 						Year
 					</abbr>
 				</th>
@@ -128,10 +135,22 @@
 		{% if userDataList %}
 			<tbody>
 				{% for item in userDataList %}
-						<tr onclick="window.location='/users/{{item._id}}'">
+						<!-- <tr onclick="window.location='/users/{{item._id}}'"> -->
+						<tr>
+							
 							<td style="color: white;">{{loop.index}}</td>
-							<td>{{item['Name']}}</td>
-							<td>{{item['_id']}}</td>
+							<!-- <td>{{item['Name']}}</td> -->
+							<td>
+								<a href="{{url_for('userHandler',id=item._id)}}">
+									{{item['Name']}}
+								</a>
+							</td>
+							<!-- <td>{{item['_id']}}</td> -->
+							<td>
+								<a href="{{url_for('userHandler',id=item._id)}}">
+									{{item['_id']}}
+								</a>
+							</td>
 							<td>{{item['Department']}}</td>
 							<td>{{item['Year']}}</td>
 							<td>{{item['Section']}}</td>
@@ -166,10 +185,12 @@
 
 {% if searchData %}
 	<script>
+		$("#sectionSelect").val("{{searchData['sectionSelect']}}")
+		$("#nameSearchBox").val("{{searchData['nameSearchBox']}}")
+		$("#usnSearchBox").val("{{searchData['usnSearchBox']}}")
 		$("#yearSelect").val("{{searchData['yearSelect']}}")
 		$("#deptSelect").val("{{searchData['deptSelect']}}")
-		$("#NameSearchBox").val("{{searchData['NameSearchBox']}}")
-		$("#UsnSearchBox").val("{{searchData['UsnSearchBox']}}")
+		
 	</script>
 {% endif %}
 
@@ -178,8 +199,9 @@
 	function resetForm(){
 		$("#yearSelect").val("---")
 		$("#deptSelect").val("---")
-		$("#NameSearchBox").val('')
-		$("#UsnSearchBox").val('')
+		$("#sectionSelect").val('---')
+		$("#nameSearchBox").val('')
+		$("#usnSearchBox").val('')
 	}
 </script>
 
@@ -191,6 +213,27 @@
 
 	html{
 		background-color: black;
+	}
+
+	
+	/* unvisited link */
+	a:link {
+		color: white;
+	}
+
+	/* visited link */
+	a:visited {
+		color: white;
+	}
+
+	/* mouse over link */
+	a:hover {
+		color: #1abc9c;
+	}
+
+	/* selected link */
+	a:active {
+		color: blue;
 	}
 </style>
 

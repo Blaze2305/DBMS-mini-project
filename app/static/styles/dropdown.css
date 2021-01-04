@@ -60,6 +60,40 @@ html, body {
   transition: all 0.05s ease-in-out;
   -webkit-appearance: none;
 }
+
+
+.stockContainer{
+    /* float: left; */
+    width: 2.45em;
+    height: 2.45em;
+    background: #1abc9c;
+    padding: 10px;
+    display: -webkit-box;
+    display: flex;
+    -webkit-box-align: center;
+            align-items: center;
+    box-shadow: 0 2px 0 0px rgba(0, 0, 0, 0.1);
+    border-radius: 3px;
+}
+
+
+#stockCheckBox{
+    /* -webkit-box-flex: 1; */
+    flex: 1 1 auto;
+    -webkit-box-ordinal-group: 3;
+        order: 2;
+    outline: none;
+    border: none;
+    border-radius: 0;
+    background: #fff;
+    padding: 20px;
+    color: black;
+    font-family: 'Roboto', sans-serif;
+    height: 2em;
+    -webkit-transition: all 0.05s ease-in-out;
+    transition: all 0.05s ease-in-out;
+}
+
 .sw .search:focus {
   height: 2.8em;
   margin-left: -15px;
@@ -142,8 +176,7 @@ html, body {
     position: relative;
     display: inline-block;
     vertical-align:bottom;
-    margin: 30px;
-    /* demo only */
+    margin: 20px;
 }
 
 .custom_button button {
@@ -165,5 +198,38 @@ html, body {
 }
 
 .custom_buttonn button[disabled]::after {
+    color: rgba(0, 0, 0, .1);
+}
+
+
+
+/* Custom Return Button on the book returns page */
+/* Search button */
+
+.custom_return_button {
+    position: relative;
+    display: inline-block;
+    vertical-align:bottom;
+}
+
+.custom_return_button button {
+    background-color: #1abc9c;
+    color: #fff;
+    font-size: inherit;
+    padding: .5em;
+    padding-right: 2.5em;
+    border: 0;
+    margin: 0;
+    border-radius: 3px;
+    text-indent: 0.01px;
+    text-overflow: '';
+    -webkit-appearance: none;
+    /* hide default arrow in chrome OSX */
+}
+.custom_return_button button[disabled] {
+    color: rgba(0, 0, 0, .3);
+}
+
+.custom_return_buttonn button[disabled]::after {
     color: rgba(0, 0, 0, .1);
 }

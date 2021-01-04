@@ -78,21 +78,30 @@
 					<br>
 					{% if session['token'] %}
 						{% if check_if_reserved(session['token'],bookData['_id']) %}
-							<p class="">
+							<p>
 								&nbsp; &nbsp; &nbsp;
 								<button class="button is-primary" style="height: 60px;">
 									Book Reserved
 									<br>Due on {{get_due_date(session['token'],bookData['_id'])}}
 								</button>
 							</p>
+						{% elif is_admin(session['token']) %}
+							<a href="#">
+								<p>
+									&nbsp; &nbsp; &nbsp;
+									<button class="button is-primary" style="height: 60px;">
+										Edit Book Information
+									</button>
+								</p>
+							</a>
 						{% else %}
 							{% if not bookData['Stock']>0 %}
-								<p class="">
+								<p>
 									&nbsp; &nbsp; &nbsp;
 									<button class="button is-primary">Out of stock</button>
 								</p>
 							{% else %}
-								<p class="">
+								<p>
 									&nbsp; &nbsp; &nbsp;
 									<button class="button is-primary" onclick="showBorrowPopup()">Reserve</button>
 								</p>
@@ -100,12 +109,12 @@
 						{% endif %}
 					{% else %}
 						{% if not bookData['Stock']>0 %}
-							<p class="">
+							<p>
 								&nbsp; &nbsp; &nbsp;
 								<button class="button is-primary">Out of stock</button>
 							</p>
 						{% else %}
-							<p class="">
+							<p>
 								&nbsp; &nbsp; &nbsp;
 								<button class="button is-primary" onclick="showBorrowPopup()">Reserve</button>
 							</p>

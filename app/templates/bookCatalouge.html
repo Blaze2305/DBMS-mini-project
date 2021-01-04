@@ -37,11 +37,30 @@
 					Search By Title
 					<div class="searchbox">
 						<div class="sw">
-							<input  type="search" id='searchbox' name='titleSearchBox' class="search" placeholder="Search..." style="font-size: medium;"/>
+							<input  type="search" id='titleSearchBox' name='titleSearchBox' class="search" placeholder="Title..." style="font-size: medium;"/>
+						</div>
+					</div>
+					<br>
+					Search By Author
+					<div class="searchbox">
+						<div class="sw">
+							<input  type="search" id='authorSearchBox' name='authorSearchBox' class="search" placeholder="Author..." style="font-size: medium;"/>
 						</div>
 					</div>
 				</div>
 				<div class="column">
+					&nbsp;&nbsp;&nbsp;Search by Year
+					<br>
+					<span class="custom-dropdown">
+						<select id='yearSelect' name='yearSelect' style="width: 200px;color: black;">
+							<option>---</option>
+							<option>Year 1</option>  
+							<option>Year 2</option>
+							<option>Year 3</option>
+							<option>Year 4</option>
+						</select>
+					</span>
+					<br>
 					&nbsp;&nbsp;&nbsp;Search by Dept <br>
 					<span class="custom-dropdown">
 						<select id='deptSelect' name='deptSelect' style="color: black;">
@@ -55,26 +74,22 @@
 							<option>ECE</option>
 						</select>
 					</span>
-	
+					
 				</div>
 				<div class="column">
-					&nbsp;&nbsp;&nbsp;Search by Year
-					<span class="custom-dropdown">
-						<select id='yearSelect' name='yearSelect' style="width: 200px;color: black;">
-							<option>---</option>
-							<option>Year 1</option>  
-							<option>Year 2</option>
-							<option>Year 3</option>
-							<option>Year 4</option>
-						</select>
-					</span>
+					Show only books in stock
+					<br>
+					<div class="searchbox">
+						<div class="stockContainer">
+							<input  type="checkbox" id="stockCheckBox" name="stockCheckBox" value="True"/>
+						</div>
+					</div>
 				</div>
 				<div class="column">
 					<span class="custom_button">
 						<button style="font-size: larger;color: black;font-weight: 400;" type="button" onclick="resetForm()">Reset</button>
 					</span>
-				</div>
-				<div class="column">
+					<br>
 					<span class="custom_button">
 						<button type="submit" style="font-size: larger;color: black;font-weight: 400;">Search</button>
 					</span>
@@ -119,17 +134,24 @@
 	
 {% if searchData %}
 	<script>
+		$("#titleSearchBox").val("{{searchData['titleSearchBox']}}")
+		$("#authorSearchBox").val("{{searchData['authorSearchBox']}}")
 		$("#yearSelect").val("{{searchData['yearSelect']}}")
 		$("#deptSelect").val("{{searchData['deptSelect']}}")
-		$("#searchbox").val("{{searchData['titleSearchBox']}}")
+		if('{{searchData["stockCheckBox"]}}'){
+			console.log("YES")
+			$("#stockCheckBox").prop("checked",true)
+		}
 	</script>
 {% endif %}
 
 <script>
 	function resetForm(){
+		$("#titleSearchBox").val('')
+		$("#authorSearchBox").val('')
 		$("#yearSelect").val("---")
 		$("#deptSelect").val("---")
-		$("#searchbox").val('')
+		$("#stockCheckBox").prop("checked",false)
 	}
 </script>
 

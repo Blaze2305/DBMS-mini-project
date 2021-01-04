@@ -3,7 +3,7 @@
 from app import app
 from flask import render_template, request,Response, url_for,session,redirect,flash
 from app.db import user
-
+from app.utils import validateLogin,validateAdmin
 
 @app.route("/login",methods = ["GET","POST"])
 def loginHandler():
@@ -32,6 +32,7 @@ def loginHandler():
 
 
 @app.route("/logout",methods = ["GET"])
+@validateLogin
 def logoutHandler():
 	# Route for logging out the user
 	if request.method == "GET":
@@ -46,6 +47,7 @@ def logoutHandler():
 
 
 @app.route("/profile",methods = ['GET'])
+@validateLogin
 def profileHandler():
 	if request.method == "GET":
 		token = session['token']
@@ -66,6 +68,7 @@ def profileHandler():
 #####################################################################################
 
 @app.route("/users",methods=['GET'])
+@validateAdmin
 def userListHandler():
 	if request.method == "GET":
 		userData = user.getUsersList()
@@ -75,6 +78,7 @@ def userListHandler():
 
 	
 @app.route("/users/search",methods=['POST'])
+@validateAdmin
 def userFilterHandler():
 	if request.method == "POST":
 		data = request.form
@@ -85,6 +89,7 @@ def userFilterHandler():
 
 
 @app.route("/users/<id>",methods = ['GET'])
+@validateAdmin
 def userHandler(id):
 	# Render out a users profile page as an admin
 	if request.method == "GET":

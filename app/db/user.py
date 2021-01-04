@@ -184,6 +184,7 @@ def getUsersList(userFilter={}):
 			<dict> {status:True,message:<List(dict):List of user data>} if success
 					{status:False,message:Error Message} if failure
 	'''
+	print(userFilter)
 	# create a empty dict to store the final mongoDB filter generated
 	finalFilter = {"Type":"Student"}
 	# if the filter is passed we convert it into a mongodb thing else we dont
@@ -191,20 +192,22 @@ def getUsersList(userFilter={}):
 		# if the filter passed has an entry for the Name search we create a regex that matches the string passed with all 
 		# the USN with the string being  anywhere in the Name
 		# ie .*<str here>.*
-		if userFilter['NameSearchBox']:
-			finalFilter['Name'] = {"$regex":compile(".*"+userFilter['NameSearchBox']+".*",IGNORECASE)}
+		if userFilter['nameSearchBox']:
+			finalFilter['Name'] = {"$regex":compile(".*"+userFilter['nameSearchBox']+".*",IGNORECASE)}
 		# if the filter passed has an entry for the USN search we create a regex that matches the string passed
 		#  with all the USN  with the string being anywhere in the USN
 		# ie .*<str here>.*
-		if userFilter['UsnSearchBox']:
-			finalFilter['_id'] = {"$regex":compile(".*"+userFilter['UsnSearchBox']+".*",IGNORECASE)}
+		if userFilter['usnSearchBox']:
+			finalFilter['_id'] = {"$regex":compile(".*"+userFilter['usnSearchBox']+".*",IGNORECASE)}
 		# If the filter passed has a value for the department ( ie anything exceptt --- , cuz --- is empty in our case) then we add that to the dict
 		if userFilter['deptSelect']!="---":
 			finalFilter['Department'] = userFilter['deptSelect']
 		# If the filter passed has a value for the year ( ie anything exceptt --- , cuz --- is empty in our case) then we add that to the dict
 		if userFilter['yearSelect']!='---':
 			finalFilter['Year'] = int(userFilter['yearSelect'].split(" ")[1])
-
+		# If the filter passed has a value for the year ( ie anything exceptt --- , cuz --- is empty in our case) then we add that to the dict
+		if userFilter['sectionSelect']!='---':
+			finalFilter['Section'] = userFilter['sectionSelect']
 	try:
 		# use the given filter and fetch the users in the collection
 		userDataList = list(usersCollection.find(finalFilter,{"PhotoUrl":0,"Contact":0,"DOB":0,"Type":0}))

@@ -1,25 +1,27 @@
 # ALL STUDENT RELATED ROUTES GO HERE
+# IMPORTS
 from app import app
 from flask import render_template, request,session,Response,flash
 from app.db import books
-
+from app.utils import validateLogin,validateAdmin
 
 @app.before_request
 def before():
 	print(f"CURRENT ROUTE => {request.url_rule}")
 
 
+@app.errorhandler(404)
+def notFound(e):
+	return render_template("404.html",PageTitle="Page Not Found")
+
+
 @app.route("/")
 def index():
 	print(app.url_map)
 	print(session)
-	# Render the home page
 	return render_template("home.html",PageTitle="Home")
 
 
-
-
-# Create the route for a single book
 @app.route("/books/<id>",methods = ['GET'])
 def bookHandler(id):
 	if request.method == "GET":
@@ -49,6 +51,7 @@ def filteredCatalouge():
 
 
 @app.route("/reserve",methods=["POST"])
+@validateLogin
 def reserveHandler():
 	if request.method == "POST":
 		data = request.json
@@ -57,3 +60,34 @@ def reserveHandler():
 			flash(reserveStatus['message'])
 			return "false"
 		return "true"
+
+
+#####################################################################################
+# 							ADMIN ONLY ROUTES BELOW									#
+#####################################################################################
+
+@app.route("/returns",methods=['GET','POST'])
+@validateAdmin
+def returnHandler():
+	if request.method == "GET":
+		returnStatus = books.listAllBorrowedBooks()
+		if not returnStatus['status']:
+			return Response(returnStatus['message'],400)
+		return render_template("bookReturnsPage.html",bookDataList=returnStatus['message'],PageTitle="Book Returns")
+	if request.method == "POST":
+		returnBookData = request.get_json()
+		print(returnBookData)
+		return True
+
+
+@app.route("/returns/search",methods=['POST'])
+@validateAdmin
+def returnSearchHandler():
+	if request.method == "POST":
+		data = request.form
+		returnStatus = books.listAllBorrowedBooks(data)
+		if not returnStatus['status']:
+			return Response(returnStatus['message'],400)
+		return render_template("bookReturnsPage.html",bookDataList=returnStatus['message'],searchData=data,PageTitle="Book Returns")
+
+	

@@ -1,0 +1,344 @@
+{% extends "baseHtml.html" %}
+
+{% block navbarItems %}
+	<ul class="navbar__links">
+		{% if not session['token'] %}
+			<a href="{{url_for('loginHandler')}}">
+				<li>Login</li>
+			</a>
+		{% else %}
+			<a href="{{url_for('logoutHandler')}}">
+				<li>Logout</li>
+			</a>
+		{% endif %}
+		{% if session['token'] %}
+			{% if not is_admin(session['token']) %}
+				<a href="{{url_for('profileHandler')}}">
+					<li>Profile</li>
+				</a>
+			{% endif %}
+		{% endif %}
+	</ul>
+{% endblock %}
+
+{% block imports %}
+	<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/dropdown.css') }}">
+	<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/userList.css') }}">
+	<script src="{{url_for('static',filename='js/sortable.js')}}"></script>
+{% endblock %}
+
+
+{% block bodyContent %}
+<br><br><br><br>
+	<div class="container">
+		<form action="/returns/search" method="POST">
+
+			<div class="columns  is-centered is-mobile is-8">
+				<div class="column">
+					Search By Title
+					<div class="searchbox">
+						<div class="sw">
+							<input  type="search" id='titleSearchBox' name='titleSearchBox' class="search" placeholder="Name..." style="font-size: medium;"/>
+						</div>
+					</div>
+					Search By USN
+					<div class="searchbox">
+						<div class="sw">
+							<input  type="search" id='usnSearchBox' name='usnSearchBox' class="search" placeholder="USN..." style="font-size: medium;"/>
+						</div>
+					</div>
+				</div>
+				<div class="column">
+					Borrow Date From
+					<div class="searchbox">
+						<div class="sw">
+							<input  type="date" id='borrowDateFrom' name='borrowDateFrom' class="search" style="font-size: medium;"/>
+						</div>
+					</div>
+					<br>
+					Borrow Date To
+					<div class="searchbox">
+						<div class="sw">
+							<input  type="date" id='borrowDateTo' name='borrowDateTo' class="search" style="font-size: medium;"/>
+						</div>
+					</div>
+				</div>
+				<div class="column">
+					Due Date From
+					<div class="searchbox">
+						<div class="sw">
+							<input  type="date" id='dueDateFrom' name='dueDateFrom' class="search" style="font-size: medium;"/>
+						</div>
+					</div>
+					<br>
+					Due Date To
+					<div class="searchbox">
+						<div class="sw">
+							<input  type="date" id='dueDateTo' name='dueDateTo' class="search" style="font-size: medium;"/>
+						</div>
+					</div>
+				</div>
+				<div class="column">
+					<span class="custom_button">
+						<button style="font-size: larger;color: black;font-weight: 400;" type="button" onclick="resetForm()">Reset</button>
+					</span>
+					<span class="custom_button">
+						<button type="submit" style="font-size: larger;color: black;font-weight: 400;">Search</button>
+					</span>
+				</div>
+			</div>	
+		</form>
+	</div>
+	<br><br><br>
+	<hr>
+
+	<div class="modal" id="borrowPopup" style="background-color: white; opacity: 0.95;">
+		<div class="modal-background" id="borrowPopupBackground"></div> 
+		<div class="modal-card" id="borrowPopupBody">
+		<header class="modal-card-head" style="background-color: white;">
+			<p class="modal-card-title" style="color: black; background-color: white;font-weight: 600;">
+				Return Book
+			</p>
+			<button class="button is-danger is-right" aria-label="close" onclick="closeModal()" style="float: right;">&#10006</button>
+		</header>
+		<section class="modal-card-body" style="color: black;">
+			<p style="background-color: white;color: black;">
+				Mark Book as returned? <strong style="background-color: white;color: black;">
+		
+				</strong>
+				<br><br>
+					Book Name : <span id="bookName" style="background-color: white;color: black;"></span>
+				<br>
+					Book ID : <span id="bookID" style="background-color: white;color: black;"></span>
+				<br><br>
+					Student Name : <span id="studentName" style="background-color: white;color: black;"></span>
+				<br>
+					Student USN : <span id="studentUSN" style="background-color: white;color: black;"></span>
+				<br><br>
+					Due Date : <span id="dueData" style="background-color: white;color: black;"></span>
+				<br>
+					Fines Due : <span id="fineDue" style="background-color: white;color: black;"></span>
+				<br><br><br>
+				{% if session['token'] %}
+					<button class="button is-primary" style="display: block;margin: 0 auto;">Mark As Reserved</button>
+				{% else %}
+					<a href="{{url_for('loginHandler',from=request.path)}}">
+						<button class="button is-primary" style="display: block;margin: 0 auto;">Login to Mark As Reserved</button>
+					</a>
+				{% endif %}
+			</p>
+			</div>
+		</section>
+		</div>
+	</div>
+
+
+
+	<table class="table  is-striped is-hoverable is-fullwidth sortable">
+		<thead>
+			<tr>
+				<th>
+					<abbr title="Serial Number">
+						S.No
+					</abbr>
+				</th>
+				<th>
+					<abbr title="Book Name">
+						Title
+					</abbr>
+				</th>
+				<th>
+					<abbr title="Borrowed On">
+						Borrowed On
+					</abbr>
+				</th>
+				<th>
+					<abbr title="Due On">
+						Due Date
+					</abbr>
+				</th>
+				<th>
+					<abbr title="Borrowed By">
+						Borrowed By
+					</abbr>
+				</th>
+				<th>
+					<abbr title="Student USN">
+						USN
+					</abbr>
+				</th>
+				<th>
+					<abbr title="Student USN">
+						Return
+					</abbr>
+				</th>
+			</tr>
+		</thead>
+		{% if bookDataList %}	
+			<tbody>
+				{% for item in bookDataList %}
+						<tr>
+							<td style="color: white;">{{loop.index}}</td>
+							<!-- <td onclick="window.location.href='/books/{{item.BookID}}'">{{item['BookName']}}</td> -->
+							<td>
+								<a href="{{url_for('bookHandler',id=item.BookID)}}">
+									{{item['BookName']}}
+								</a>
+							</td>
+							<td>{{format_date(item["BorrowedOn"])}}</td>
+							<td>{{format_date(item['DueDate'])}}</td>
+							<!-- <td onclick="window.location.href='/users/{{item.User}}'">{{item['Name']}}</td> -->
+							<td>
+								<a href="{{url_for('userHandler',id=item.User)}}">
+									{{item['Name']}}
+								</a>
+							</td>
+							<!-- <td onclick="window.location.href='/users/{{item.User}}'">{{item['User']}}</td> -->
+							<td>
+								<a href="{{url_for('userHandler',id=item.User)}}">
+									{{item['User']}}
+								</a>
+							</td>
+							<td>
+								<span class="custom_return_button" onclick="showReturnPopup('{{item.BookID}}',
+																							'{{item.User}}',
+																							'{{item.Name}}',
+																							'{{get_due_date(session.token,item.BookID,item.User)}}',
+																							'{{calculate_dues(item.BookID,session.token,item.User)}}',
+																							'{{item.BookName}}')">
+									<button type="button" style="font-size: smaller;color: black;font-weight: 400;">Mark Returned</button>
+								</span>
+							</td>
+						</tr>
+				{% endfor %}
+			</tbody>
+		{% else %}
+			<tbody>
+				<tr>
+					<td>--</td>
+					<td>--</td>
+					<td>--</td>
+					<td>--</td>
+					<td>--</td>
+					<td>--</td>
+					<td>--</td>
+				</tr>
+			</tbody>
+		{% endif %}
+	</table>
+	{% if not bookDataList  %}
+		<div>
+			<img src="{{url_for('static',filename='images/empty.svg')}}" style="max-width: 100%;height: auto;" >
+			<div class="message-box">
+				<br><br><br><br><br><br><br><br><br><br><br>
+				<h1>No Returns found</h1>
+				<p>The search you made has no matching results. Try another filter</p>
+			</div>
+		</div>
+	{% endif %}
+
+{% if searchData %}
+	<script>
+		$("#titleSearchBox").val("{{searchData['titleSearchBox']}}")
+		$("#usnSearchBox").val("{{searchData['usnSearchBox']}}")
+		$("#borrowDateFrom").val("{{searchData['borrowDateFrom']}}")
+		$("#borrowDateTo").val("{{searchData['borrowDateTo']}}")
+		$("#dueDateFrom").val("{{searchData['dueDateFrom']}}")
+		$("#dueDateTo").val("{{searchData['dueDateTo']}}")
+	</script>
+{% endif %}
+
+
+<script>
+	function resetForm(){
+		$("#titleSearchBox").val('')
+		$("#usnSearchBox").val('')
+		$("#borrowDateFrom").val('')
+		$("#borrowDateTo").val('')
+		$("#dueDateFrom").val('')
+		$("#dueDateTo").val('')
+	}
+
+	function showReturnPopup(bid,uid,name,dueDate,fineDue,bookName){
+		console.log(uid)
+		$("#bookID").text(bid)
+		$("#dueData").text(dueDate)
+		$("#fineDue").text(fineDue)
+		$("#studentName").text(name)
+		$("#studentUSN").text(uid)
+		$("#bookName").text(bookName)
+		$("#borrowPopup").addClass("is-active")
+	}
+
+
+	function ReturnBook(){
+			var sendInfo = {
+				"bid":bid,
+				"uid":uid
+			}
+			console.log(sendInfo)
+		
+			$.ajax({
+				type: 'POST',
+				url: '/returns',
+				data: JSON.stringify (sendInfo),
+				success:()=>{
+					console.log("Book Reserved")
+				},
+				contentType: "application/json",
+				dataType: 'json'
+			});
+			location.reload(true);
+		}
+
+</script>
+
+
+<style>
+	table.sortable th:not(.sorttable_sorted):not(.sorttable_sorted_reverse):not(.sorttable_nosort):after { 
+	    content: " \25B4\25BE" 
+	}
+
+	html{
+		background-color: black;
+	}
+
+
+	/* unvisited link */
+	a:link {
+		color: white;
+	}
+
+	/* visited link */
+	a:visited {
+		color: white;
+	}
+
+	/* mouse over link */
+	a:hover {
+		color: #1abc9c;
+	}
+
+	/* selected link */
+	a:active {
+		color: blue;
+	}
+
+
+
+	@media screen and (min-width: 769px){
+			#borrowPopupBody {
+				margin: 0 auto;
+				/* max-height: calc(200vh - 10px); */
+				height: 450px;
+				width: 600px !important;
+			}
+		}
+
+	#borrowPopupBackground{
+		background-color: rgb(0 0 0 / 93%);
+
+	}
+</style>
+
+{% endblock %}

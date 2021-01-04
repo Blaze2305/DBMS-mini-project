@@ -82,7 +82,7 @@ def utility_processor():
 			return True
 
 	# Get the due date of the book
-	def getDueDate(token,book_id):
+	def getDueDate(token,book_id,uid=None):
 		'''
 			Function to get the due date for the given book for the given user
 			params:
@@ -93,7 +93,11 @@ def utility_processor():
 				<str> Date in yyyy-mm-dd format
 
 		'''
+		# get the token from the tokencollection
 		tokenObj = tokenCollection.find_one({"token":token})
+		# if the token belongs to an admin then the borrow data needs to come from the student ie students user id
+		if tokenObj['_id'] == "Admin":
+			tokenObj = {"_id":uid}
 		borrowObj = borrowsCollection.find_one({"User":tokenObj['_id'],"BookID":book_id})
 		duedate = borrowObj['DueDate'].strftime("%Y-%m-%d")
 		return duedate
@@ -178,7 +182,7 @@ def utility_processor():
 # BELOW ARE THE CUSTOM DECORATORS WE USED TO VERIFY STUFF
 
 # Validate if the request was made by an admin
-def validateRequestAdmin(f):
+def validateAdmin(f):
 	'''
 		Function to check if the request was made by an admin or not. If not admin then we reroute to the proper page
 		params:

@@ -1,0 +1,51 @@
+{% extends "baseHtml.html" %}
+
+{% block bodyContent %}
+	<br><br><br>
+	<br><br><br>
+		<div>
+			<img src="{{url_for('static',filename='images/404.svg')}}" style="max-width: 100%;height: auto;" >
+			<div class="message-box">
+				<h1>The page you requested does not exist</h1>
+				<p>Go back and try something else</p>
+			</div>
+		</div>
+
+
+	<style>
+		@media (max-width: 450px) {
+			.message-box {
+				top: 50%;
+				left: 50%;
+				margin-top: -100px;
+				margin-left: -190px;
+				text-align: center;
+				background-color: transparent;
+			}
+		}
+
+		.message-box {
+			height: 200px;
+			width: 380px;
+			position: absolute;
+			top: 25%;
+			left: 60%;
+			margin-top: -100px;
+			margin-left: 50px;
+			color: #FFF;
+			font-family: Roboto;
+			font-weight: 300;
+			background-color: transparent;
+		}
+		.message-box h1 {
+			font-size: 50px;
+			line-height: 46px;
+			margin-bottom: 40px;
+			background-color: transparent;
+		}
+
+		p{
+			background-color: transparent;
+		}
+	</style>
+{% endblock %}

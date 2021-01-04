@@ -106,7 +106,7 @@
 		{% for item in borrowData %}
 				<tr>
 					<td style="color: white;">{{loop.index}}</td>
-					<td>{{item['Name']}}</td>
+					<td>{{item['BookName']}}</td>
 					<td>{{format_date(item['BorrowedOn'])}}</td>
 					<td>{{format_date(item['DueDate'])}}</td>
 					{% if not item['ReturnedOn'] %}
