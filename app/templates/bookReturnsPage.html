@@ -29,7 +29,7 @@
 
 
 {% block bodyContent %}
-<br><br><br><br>
+	<br><br><br><br>
 	<div class="container">
 		<form action="/returns/search" method="POST">
 
@@ -92,6 +92,7 @@
 	<br><br><br>
 	<hr>
 
+
 	<div class="modal" id="borrowPopup" style="background-color: white; opacity: 0.95;">
 		<div class="modal-background" id="borrowPopupBackground"></div> 
 		<div class="modal-card" id="borrowPopupBody">
@@ -120,10 +121,10 @@
 					Fines Due : <span id="fineDue" style="background-color: white;color: black;"></span>
 				<br><br><br>
 				{% if session['token'] %}
-					<button class="button is-primary" style="display: block;margin: 0 auto;">Mark As Reserved</button>
+					<button id="returnButton" class="button is-primary" style="display: block;margin: 0 auto;" onclick="ReturnBook()"></button>
 				{% else %}
 					<a href="{{url_for('loginHandler',from=request.path)}}">
-						<button class="button is-primary" style="display: block;margin: 0 auto;">Login to Mark As Reserved</button>
+						<button class="button is-primary" style="display: block;margin: 0 auto;">Login to Mark Book As Returned</button>
 					</a>
 				{% endif %}
 			</p>
@@ -134,7 +135,7 @@
 
 
 
-	<table class="table  is-striped is-hoverable is-fullwidth sortable">
+	<table class="table is-striped is-hoverable is-fullwidth sortable">
 		<thead>
 			<tr>
 				<th>
@@ -177,8 +178,8 @@
 		{% if bookDataList %}	
 			<tbody>
 				{% for item in bookDataList %}
-						<tr>
-							<td style="color: white;">{{loop.index}}</td>
+						<tr id='{{item.BookID}}-{{item.User}}'>
+							<td id="index" style="color: white;">{{loop.index}}</td>
 							<!-- <td onclick="window.location.href='/books/{{item.BookID}}'">{{item['BookName']}}</td> -->
 							<td>
 								<a href="{{url_for('bookHandler',id=item.BookID)}}">
@@ -226,16 +227,18 @@
 			</tbody>
 		{% endif %}
 	</table>
-	{% if not bookDataList  %}
-		<div>
-			<img src="{{url_for('static',filename='images/empty.svg')}}" style="max-width: 100%;height: auto;" >
-			<div class="message-box">
-				<br><br><br><br><br><br><br><br><br><br><br>
-				<h1>No Returns found</h1>
-				<p>The search you made has no matching results. Try another filter</p>
+	<div id="no-books">
+		{% if not bookDataList  %}
+			<div>
+				<img src="{{url_for('static',filename='images/empty.svg')}}" style="max-width: 100%;height: auto;" >
+				<div class="message-box">
+					<br><br><br><br><br><br><br><br><br><br><br>
+					<h1>No Returns found</h1>
+					<p>The search you made has no matching results. Try another filter</p>
+				</div>
 			</div>
-		</div>
-	{% endif %}
+		{% endif %}
+	</div>
 
 {% if searchData %}
 	<script>
@@ -260,7 +263,6 @@
 	}
 
 	function showReturnPopup(bid,uid,name,dueDate,fineDue,bookName){
-		console.log(uid)
 		$("#bookID").text(bid)
 		$("#dueData").text(dueDate)
 		$("#fineDue").text(fineDue)
@@ -268,28 +270,59 @@
 		$("#studentUSN").text(uid)
 		$("#bookName").text(bookName)
 		$("#borrowPopup").addClass("is-active")
+		if(fineDue!="--"){
+			$("#returnButton").text("Confirm Dues Collected and Mark as Returned")
+		}else{
+			$("#returnButton").text("Mark as Returned")
+		}
 	}
 
 
 	function ReturnBook(){
-			var sendInfo = {
-				"bid":bid,
-				"uid":uid
-			}
-			console.log(sendInfo)
-		
-			$.ajax({
-				type: 'POST',
-				url: '/returns',
-				data: JSON.stringify (sendInfo),
-				success:()=>{
-					console.log("Book Reserved")
-				},
-				contentType: "application/json",
-				dataType: 'json'
-			});
-			location.reload(true);
+		var bid = $("#bookID").text()
+		var uid = $("#studentUSN").text()
+		var sendInfo = {
+			"bid":bid,
+			"uid":uid
 		}
+		console.log(sendInfo)
+	
+		$.ajax({
+			type: 'POST',
+			url: '/returns',
+			data: JSON.stringify (sendInfo),
+			success:()=>{
+				$(`#${bid}-${uid}`).remove()
+				$("#borrowPopup").removeClass("is-active")
+				RecalculateSerialNumbers()
+				console.log(`ROW ${bid}-${uid} deleted`)
+			},
+			contentType: "application/json",
+			dataType: 'json'
+		});
+	}
+
+
+	function RecalculateSerialNumbers(){
+		rows = document.getElementsByClassName("table")[0].rows
+		for(i=1;i<rows.length;i++){
+			rows[i].cells[0].innerHTML = i;
+		}
+		console.log(rows.length)
+		if(rows.length<=1){
+			$(".bodyHTML").remove()
+			document.getElementById("no-books").innerHTML = `
+							<div>
+								<img src="{{url_for('static',filename='images/empty.svg')}}" style="max-width: 100%;height: auto;" >
+								<div class="message-box">
+									<br><br><br><br><br><br><br><br><br><br><br>
+									<h1>No Returns found</h1>
+									<p>You've covered all the book returns for now!</p>
+								</div>
+							</div>
+			`
+		}
+	}
 
 </script>
 

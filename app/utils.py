@@ -49,7 +49,7 @@ def utility_processor():
 		if daysDue<=0:
 			return "--"
 		else:
-			return 5*daysDue
+			return format_price(5*daysDue)
 
 	# Get the duedate from now
 	def getCurDueDate():

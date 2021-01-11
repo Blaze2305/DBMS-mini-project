@@ -116,7 +116,7 @@ def listAllBorrowedBooks(bookFilter = {}):
 					{status:False,message:Error message} if failure
 	'''
 	# create a empty dict to store the final mongoDB filter generated
-	finalFilter = {}
+	finalFilter = {"ReturnedOn":None}
 	# if the filter is passed we convert it into a mongodb thing else we dont
 	if bookFilter:
 		# if the filter passed has an entry for the title search we create a regex that matches the string passed 
@@ -181,3 +181,33 @@ def listAllBorrowedBooks(bookFilter = {}):
 	except ConnectionFailure:
 		return {'status':False,'message':"Unable to Connect to database"}
 	return {'status':True,'message':borrowDataList}
+
+# Mark book as returned
+def markBookAsReturned(bookData):
+	'''
+		Function to mark a given book as returned. This functions marks only one book as returned, the fines and stuff need 
+		to be handled by the admin on the frontend.
+
+		params:
+			bookData : <dict> This dict is the data passed from the frontend which contains the book id and uid
+						eg: {
+								'bid': <The book id of the book being returned>, 
+								'uid': <The user who is returning the book>
+							}
+		returns:
+			<dict> {status:True,message:True} if success
+					{status:False,message:Err message} if failure
+	'''
+	# Check if the book id exists or not in the data passed to the backend
+	if "bid" not in bookData:
+		return {'status':False,"message":"Book ID missing from request"}
+	# Check if the user id exists or not in the data passed to the backend
+	if "uid" not in bookData:
+		return {'status':False,"message":"User ID missing from request"}
+	try:
+		# Update the borrows collection to mark the book as returned
+		borrowsCollection.update_one({"User":bookData['uid'],"BookID":bookData['bid']},{"$set":{"ReturnedOn":datetime.now()}})
+	except ConnectionFailure:
+		return {'status':False,'message':"Unable to return book"}
+	# Return True if the borrow has been marked as returns
+	return {'status':True,"message":True}

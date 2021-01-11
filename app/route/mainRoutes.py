@@ -1,7 +1,7 @@
 # ALL STUDENT RELATED ROUTES GO HERE
 # IMPORTS
 from app import app
-from flask import render_template, request,session,Response,flash
+from flask import render_template, request,session,Response,flash,jsonify
 from app.db import books
 from app.utils import validateLogin,validateAdmin
 
@@ -77,7 +77,7 @@ def returnHandler():
 	if request.method == "POST":
 		returnBookData = request.get_json()
 		print(returnBookData)
-		return True
+		return jsonify(True)
 
 
 @app.route("/returns/search",methods=['POST'])

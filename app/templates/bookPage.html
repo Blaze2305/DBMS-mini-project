@@ -85,15 +85,6 @@
 									<br>Due on {{get_due_date(session['token'],bookData['_id'])}}
 								</button>
 							</p>
-						{% elif is_admin(session['token']) %}
-							<a href="#">
-								<p>
-									&nbsp; &nbsp; &nbsp;
-									<button class="button is-primary" style="height: 60px;">
-										Edit Book Information
-									</button>
-								</p>
-							</a>
 						{% else %}
 							{% if not bookData['Stock']>0 %}
 								<p>

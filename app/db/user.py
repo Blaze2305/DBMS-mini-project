@@ -3,7 +3,7 @@ from uuid import uuid4 # UUID gen lib
 from hashlib import sha256  # Hashing library
 from app.constants import tokenCollection,authCollection,borrowsCollection,usersCollection # import required collections 
 from pymongo.errors import ConnectionFailure,DuplicateKeyError # Pymongo errors
-from re import compile,IGNORECASE
+from re import compile,IGNORECASE # Regex module
 
 # login the user
 def userLogin(userData):
