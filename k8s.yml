@@ -1,0 +1,66 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: dbms
+  labels:
+    app.kubernetes.io/name: dbms
+  annotations:
+    dev.okteto.com/auto-ingress: "true"
+spec:
+  type: ClusterIP
+  ports:
+    - port: 5000
+      targetPort: 5000 
+      protocol: TCP
+      name: http-port
+  selector:
+    app.kubernetes.io/name: dbms
+---
+# Source: dbms/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dbms
+  labels:
+    app.kubernetes.io/name: dbms
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: dbms
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: dbms
+    spec:
+      containers:
+        - name: dbms-container
+          image: blaze2305/dbms_mini:latest
+          imagePullPolicy: Always
+          env:
+            - name: DBMS
+              value: "mongodb+srv://pranav:CIQkWD2t3S98Rqp6@cluster0.ufnan.mongodb.net/library?retryWrites=true"
+          ports:
+            - name: http-port
+              containerPort: 5000
+              protocol: TCP
+      imagePullSecrets:
+        - name: regcred
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: dbms
+  annotations:
+    # use the shared ingress-nginx
+    kubernetes.io/ingress.class: "nginx"
+    dev.okteto.com/generate-host: "true"
+spec:
+  rules:
+  - host: -$NAMESPACE.cloud.okteto.net
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: dbms
+          servicePort: 5000
